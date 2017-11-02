@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' gap://ready file://* 'unsafe-inline' *; style-src 'self' 'unsafe-inline' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; img-src * data:;">
+<meta charset="UTF-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height">
+<title>LIST FILTERING DEMO</title>
+<!--
+Adjust paths as needed
+-->
+<!--CSS-->
+<link href="../../MOBILE/www/css/lib/globules/ogx.dynamicList.css" rel="stylesheet" type="text/css"> 
+<!--JS LIB-->
+<script type="text/javascript" src="../../MOBILE/www/js/lib/jquery/jquery-3.1.1.min.js"></script>  
+<script type="text/javascript" src="../../MOBILE/www/js/lib/moment/moment.min.js"></script>
+<script type="text/javascript" src="../../MOBILE/www/js/dev/ES5/SHARED/class.Templater.js"></script>
+<script type="text/javascript" src="../../MOBILE/www/js/dev/ES5/SHARED/class.DynamicList.js"></script>
+<script type="text/javascript" src="../../MOBILE/www/js/dev/ES5/SHARED/class.List.js"></script>
+<style>
+	body{
+		background-color:#FFF;
+		font-family:"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, "sans-serif";
+	}
+	#wrapper{
+		display:flex;
+		flex-direction:row;
+	}
+	.box{
+		padding:10px;
+		box-sizing:border-box;
+	}	
+	input{
+		display:block;
+		padding:10px;
+		font-size:16px;
+		border:1px solid #DDD;
+		border-radius:2px;
+		width:200px;
+		margin:0;			
+	}
+	#list{
+		flex-grow:1;
+		min-height:400px;
+	}
+	#controls{		
+		flex-basis:250px;
+	}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	//Some dummy data
+	var people = new OGX.List({id:1, name:'John', age:20, date:'2017-11-10', gender:'male'}, {id:2, age:30, name:'Sarah', date:'2017-11-12', gender:'female'}, {id:3, age:35, name:'Sandra', date:'2017-10-05', gender:'female'}, {id:4, age:40, name:'Jack', date:'2017-10-06', gender:'male'}, {id:5, age:45, name:'Patrick', date:'2017-10-07', gender:'male'});
+	
+	//Create the main list
+	var list = new OGX.DynamicList({container:'#list', key:'id', mode:'single', template:'<span>$name,</span><span>$age</span>', list:people});
+	
+	//Create another list to use as a filter for the gender
+	var genders = new OGX.List({sex:'male'}, {sex:'female'});	
+	var list2 = new OGX.DynamicList({container:'#list2', mode:'toggle', template:'<span>$sex</span>', list:genders});
+	
+	//Bind the 2nd list to the first list
+	list.bind('gender', list2, 'sex', 'eq');
+	
+	//Bind other HTML elements to the first list
+	list.bind('name', '#search', null, 'in');
+	list.bind('age', '#age', null, 'btw');
+	
+	
+	//On a selection of the list, display the name in the form
+	var person;
+	list.el.on(OGX.DynamicList.SELECT, function(__e, __data){
+		person = __data;
+		$('#name').val(person.name);
+	});
+	
+	//When the name changes in the form, update the list
+	$('#name').on('input', function(){
+		if(person){
+			list.update('id', person.id, {name:$(this).val()});
+			list.refresh();
+		}
+	});
+	
+	//Just to update the age slider
+	$('#age').on('input', function(){
+		$('#age_val').val($(this).val());
+	});
+
+});  
+</script>   
+</head>
+<body> 
+<div id="wrapper">
+	<div id="list"></div>
+	<div id="controls">
+		<div class="box">			
+			<input id="name" type="text" placeholder="Name">
+		</div>
+		<div class="box">		
+			<input id="search" type="text" placeholder="Search">
+			<input id="age" type="range" min="0" max="80" value="80">
+			<input id="age_val" type="text" placeholder="Age" readonly value="80">
+			<div id="list2"></div>
+		</div>
+	</div>	
+</div>
+</body>
+</html>
