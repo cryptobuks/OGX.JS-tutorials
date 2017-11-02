@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' gap://ready file://* 'unsafe-inline' *; style-src 'self' 'unsafe-inline' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; img-src * data:;">
+<meta charset="UTF-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height">
+<title>LIST FILTERING DEMO</title>
+<!--
+Adjust paths as needed
+-->
+<!--CSS-->
+<link href="../MOBILE/www/css/lib/globules/ogx.dynamicList.css" rel="stylesheet" type="text/css"> 
+<link href="../MOBILE/www/css/lib/globules/ogx.mobileScrollContainer.css" rel="stylesheet" type="text/css"> 
+<!--JS LIB-->
+<script type="text/javascript" src="../MOBILE/www/js/lib/jquery/jquery-3.1.1.min.js"></script>  
+<script type="text/javascript" src="../MOBILE/www/js/lib/moment/moment.min.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/SHARED/class.Templater.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/MOBILE/class.MobileList.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/MOBILE/class.MobileScrollContainer.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/SHARED/class.DynamicList.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/SHARED/class.List.js"></script>
+<style>
+	body{
+		background-color:#FFF;
+		font-family:"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, "sans-serif";
+	}
+	#wrapper{
+		display:flex;
+		flex-direction:row;
+	}
+	.box{
+		padding:10px;
+		box-sizing:border-box;
+	}	
+	input{
+		display:block;
+		padding:10px;
+		font-size:16px;
+		border:1px solid #DDD;
+		border-radius:2px;
+		width:200px;
+		margin:0;			
+	}
+	#list{
+		flex-grow:1;
+		height:300px;
+	}
+	#controls{		
+		flex-basis:250px;
+	}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	//Some dummy data
+	var people = new OGX.List({id:1, name:'John', age:20, date:'2017-11-10', gender:'male'}, {id:2, age:30, name:'Sarah', date:'2017-11-12', gender:'female'}, {id:3, age:35, name:'Sandra', date:'2017-10-05', gender:'female'}, {id:4, age:40, name:'Jack', date:'2017-10-06', gender:'male'}, {id:5, age:45, name:'Patrick', date:'2017-10-07', gender:'male'}, {id:6, age:5, name:'Stewie', date:'2017-10-08', gender:'male'}, {id:7, age:38, name:'Tania', date:'2017-10-09', gender:'female'}, {id:8, age:22, name:'Jacob', date:'2017-10-10', gender:'male'}, {id:9, age:32, name:'Emily', date:'2017-10-11', gender:'female'}, {id:8, age:42, name:'Steven', date:'2017-10-12', gender:'male'});
+	
+	//sort by age
+	people.order('age', 1);	
+	
+	//Create the main list as a MobileList (the built in HTML scrollbar won't show in webview)
+	var list = new OGX.MobileList({container:'#list', key:'id', mode:'single', template:'<span>$name,</span><span>$age</span>', list:people, trigger:true});		
+	
+	//Create another list to use as a filter for the gender
+	var genders = new OGX.List({sex:'male'}, {sex:'female'});	
+	var list2 = new OGX.DynamicList({container:'#list2', mode:'toggle', template:'<span>$sex</span>', list:genders});
+	
+	//Bind the 2nd list to the first list once the mobile list is ready
+	list.el.on(OGX.MobileList.READY, function(){
+		list.el.off(OGX.MobileList.READY);
+		list.getList().bind('gender', list2, 'sex', 'eq');
+		
+		//Bind other HTML elements to the first list
+		list.getList().bind('name', '#search', null, 'in');
+		list.getList().bind('age', '#age', null, 'btw');		
+	});	
+	
+	//On a selection of the list, display the name in the form : this comes from the DynamicList embedded in the MobileList
+	var person;
+	list.el.on(OGX.DynamicList.SELECT, function(__e, __data){
+		person = __data;
+		$('#name').val(person.name);
+	});
+	
+	//When the name changes in the form, update the list
+	$('#name').on('input', function(){
+		if(person){
+			list.update('id', person.id, {name:$(this).val()});
+			list.refresh();
+		}
+	});
+	
+	//Just to update the age slider
+	$('#age').on('input', function(){
+		$('#age_val').val($(this).val());
+	});
+
+});  
+</script>   
+</head>
+<body> 
+<div id="wrapper">
+	<div id="list"></div>
+	<div id="controls">
+		<div class="box">			
+			<input id="name" type="text" placeholder="Name">
+		</div>
+		<div class="box">		
+			<input id="search" type="text" placeholder="Search">
+			<input id="age" type="range" min="0" max="80" value="80">
+			<input id="age_val" type="text" placeholder="Age" readonly value="80">
+			<div id="list2"></div>
+		</div>
+	</div>	
+</div>
+</body>
+</html>
