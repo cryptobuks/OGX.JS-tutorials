@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    
+<meta http-equiv="Content-Security-Policy" content="default-src 'self' gap://ready file://* 'unsafe-inline' *; style-src 'self' 'unsafe-inline' *; script-src 'self' 'unsafe-inline' 'unsafe-eval' *; img-src * data:;">
+<meta charset="UTF-8">
+<meta name="format-detection" content="telephone=no">
+<meta name="msapplication-tap-highlight" content="no">
+<meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height">
+<title>GROUPED LIST DEMO</title>
+<!--
+Adjust paths as needed
+-->
+<!--CSS-->
+<link href="../MOBILE/www/css/lib/globules/ogx.nestedList.css" rel="stylesheet" type="text/css"> 
+<link href="../MOBILE/www/css/lib/globules/ogx.groupedList.css" rel="stylesheet" type="text/css"> 
+<!--JS LIB-->
+<script type="text/javascript" src="../MOBILE/www/js/lib/jquery/jquery-3.1.1.min.js"></script>  
+<script type="text/javascript" src="../MOBILE/www/js/lib/moment/moment.min.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/SHARED/class.Templater.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/SHARED/class.GroupedList.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/SHARED/class.NestedList.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/SHARED/class.List.js"></script>
+<style>
+	body{
+		background-color:#FFF;
+		font-family:"Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", "DejaVu Sans", Verdana, "sans-serif";
+		padding:10px;
+	}
+	#list{
+		display:block;
+		width:300px;
+		border:1px solid #DDD;
+	}	
+	.item{
+		display:block;
+		padding:5px;
+		border:1px solid #EEE;
+	}
+</style>
+<script type="text/javascript">
+$(document).ready(function(){
+	
+	//Some dummy data
+	var people = new OGX.List({id:1, name:'John', age:20, date:'2017-11-10', gender:'male'}, {id:2, age:30, name:'Sarah', date:'2017-11-12', gender:'female'}, {id:3, age:35, name:'Sandra', date:'2017-10-05', gender:'female'}, {id:4, age:40, name:'Jack', date:'2017-10-06', gender:'male'}, {id:5, age:45, name:'Patrick', date:'2017-10-07', gender:'male'});
+	
+	//Instance
+	var list = new OGX.GroupedList({container:'#list', css:'item', group_by:'age', group_mode:'numrange', group_param:10, template:'<span>$name, </span><span>$age</span>', list:people});
+	
+	//Listen
+	list.el.on(OGX.GroupedList.SELECT, function(__event, __data){
+		console.log('SELECTED', __data);
+	});	
+
+});  
+</script>   
+</head>
+<body> 
+<div id="wrapper">
+	<div id="list"></div>	
+</div>
+</body>
+</html>
