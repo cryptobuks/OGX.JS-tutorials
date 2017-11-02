@@ -11,13 +11,13 @@
 Adjust paths as needed
 -->
 <!--CSS-->
-<link href="../../MOBILE/www/css/lib/globules/ogx.dynamicList.css" rel="stylesheet" type="text/css"> 
+<link href="../MOBILE/www/css/lib/globules/ogx.dynamicList.css" rel="stylesheet" type="text/css"> 
 <!--JS LIB-->
-<script type="text/javascript" src="../../MOBILE/www/js/lib/jquery/jquery-3.1.1.min.js"></script>  
-<script type="text/javascript" src="../../MOBILE/www/js/lib/moment/moment.min.js"></script>
-<script type="text/javascript" src="../../MOBILE/www/js/dev/ES5/SHARED/class.Templater.js"></script>
-<script type="text/javascript" src="../../MOBILE/www/js/dev/ES5/SHARED/class.DynamicList.js"></script>
-<script type="text/javascript" src="../../MOBILE/www/js/dev/ES5/SHARED/class.List.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/lib/jquery/jquery-3.1.1.min.js"></script>  
+<script type="text/javascript" src="../MOBILE/www/js/lib/moment/moment.min.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/SHARED/class.Templater.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/SHARED/class.DynamicList.js"></script>
+<script type="text/javascript" src="../MOBILE/www/js/dev/ES5/SHARED/class.List.js"></script>
 <style>
 	body{
 		background-color:#FFF;
@@ -54,8 +54,7 @@ $(document).ready(function(){
 	//Some dummy data
 	var people = new OGX.List({id:1, name:'John', age:20, date:'2017-11-10', gender:'male'}, {id:2, age:30, name:'Sarah', date:'2017-11-12', gender:'female'}, {id:3, age:35, name:'Sandra', date:'2017-10-05', gender:'female'}, {id:4, age:40, name:'Jack', date:'2017-10-06', gender:'male'}, {id:5, age:45, name:'Patrick', date:'2017-10-07', gender:'male'});
 	
-	//Create the main list
-	var list = new OGX.DynamicList({container:'#list', key:'id', mode:'single', template:'<span>$name,</span><span>$age</span>', list:people});
+	var list = new OGX.DynamicList({container:'#list', key:'id', mode:'single', template:'<span>$name,</span><span>$age</span>', list:people, trigger:true});	
 	
 	//Create another list to use as a filter for the gender
 	var genders = new OGX.List({sex:'male'}, {sex:'female'});	
@@ -79,8 +78,7 @@ $(document).ready(function(){
 	//When the name changes in the form, update the list
 	$('#name').on('input', function(){
 		if(person){
-			list.update('id', person.id, {name:$(this).val()});
-			list.refresh();
+			list.update('id', person.id, {name:$(this).val()}, true, 1);			
 		}
 	});
 	

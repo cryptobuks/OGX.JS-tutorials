@@ -87,8 +87,7 @@ $(document).ready(function(){
 	//When the name changes in the form, update the list
 	$('#name').on('input', function(){
 		if(person){
-			list.update('id', person.id, {name:$(this).val()});
-			list.refresh();
+			list.update('id', person.id, {name:$(this).val()}, true, 1);
 		}
 	});
 	

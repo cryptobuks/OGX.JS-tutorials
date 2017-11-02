@@ -44,7 +44,7 @@ $(document).ready(function(){
 	var people = new OGX.List({id:1, name:'John', age:20, date:'2017-11-10', gender:'male'}, {id:2, age:30, name:'Sarah', date:'2017-11-12', gender:'female'}, {id:3, age:35, name:'Sandra', date:'2017-10-05', gender:'female'}, {id:4, age:40, name:'Jack', date:'2017-10-06', gender:'male'}, {id:5, age:45, name:'Patrick', date:'2017-10-07', gender:'male'});
 	
 	//Instance
-	var list = new OGX.GroupedList({container:'#list', css:'item', group_by:'age', group_mode:'numrange', group_param:10, template:'<span>$name, </span><span>$age</span>', list:people});
+	var list = new OGX.GroupedList({container:'#list', css:'item', group_by:'age', group_mode:'numrange', group_param:10, template:'<span>$name, </span><span>$age</span>', list:people});	
 	
 	//Listen
 	list.el.on(OGX.GroupedList.SELECT, function(__event, __data){
