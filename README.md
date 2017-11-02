@@ -1,1 +1,1 @@
-OGX_JS_TUTS
+OGX.JS demo/tutorial HTML bundles
